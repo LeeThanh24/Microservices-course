@@ -9,8 +9,9 @@ import org.springframework.web.client.RestTemplate;
 public class CustomerConfig {
 
     @Bean
-    @LoadBalanced
-    public RestTemplate restTemplate()
+    @LoadBalanced // use the load balancer to distribute the traffics to other clients
+    public RestTemplate restTemplate() // restTemplate is like feign client but in the older version : to conduct the api of
+                                        //other services
     {
         return new RestTemplate();
     }

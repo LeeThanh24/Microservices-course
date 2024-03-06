@@ -1,10 +1,15 @@
 package com.leethanh.customer;
 
+import com.leethanh.clients.fraud.FraudCheckResponse;
+import com.leethanh.clients.fraud.FraudClient;
+import com.leethanh.clients.notification.NotificationClient;
+import com.leethanh.clients.notification.NotificationRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public record CustomerService(CustomerRepository customerRepository, RestTemplate restTemplate) {
+public record CustomerService(CustomerRepository customerRepository, RestTemplate restTemplate, FraudClient fraudClient,
+                              NotificationClient notificationClient) {
 
 
     public void registerCustomer(CustomerRegistrationRequest request) {
@@ -18,11 +23,7 @@ public record CustomerService(CustomerRepository customerRepository, RestTemplat
         // todo : check if email not taken
         customerRepository.saveAndFlush(customer);
         // todo : check if fraudster
-        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
-                "http://FRAUD/api/v1/fraud-check/{customerId}",
-                FraudCheckResponse.class,
-                customer.getId()
-        );
+        FraudCheckResponse fraudCheckResponse =fraudClient.isFrauster(customer.getId());
 
         if (fraudCheckResponse.isFraudster())
         {
@@ -31,5 +32,10 @@ public record CustomerService(CustomerRepository customerRepository, RestTemplat
 
 
         // todo: send notification
+        notificationClient.sendNotification(
+                new NotificationRequest(customer.getId(),customer.getEmail(),
+                        String.format("Hi %s, welcome to leethanh microservices",customer.getFirstName())
+                                )
+        );
     }
 }

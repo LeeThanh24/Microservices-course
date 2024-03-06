@@ -1,4 +1,4 @@
-package com.leethanh.customer;
+package com.leethanh.notification;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,11 +8,12 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient //to use eureka in client mode
 @EnableFeignClients( // to enable feign clients
-        basePackages = "com.leethanh.clients" // scan for package
+        basePackages = "com.leethanh.notification" // scan for package
 )
-public class CustomerApplication {
+public class NotificationApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CustomerApplication.class,args);
+        SpringApplication.run(NotificationApplication.class,args);
     }
 }
+
 
